@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+{% extends 'AM_FHApp_One/base.html' %}
+{% load my_extras %}
+
+{% block body_block %}
+    <h1>Welcome to Index page</h1>
+    <h3>This is an example of Template inheritance</h3>
+    {{text|cut1:'yo'}}
+    <br>
+    {{number|add:2}}
+  {% endblock %}
