@@ -4,7 +4,7 @@ from django.views.generic import (TemplateView,ListView
                                     ,DetailView, CreateView
                                     ,UpdateView,DeleteView)
 from blog.models import Post,Comment
-from blog.forms import PostForm,CommentForm
+from blog.forms import PostForm,CommentForm,UserForm,UserProfileInfoForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
@@ -90,3 +90,38 @@ def comment_remove(request,pk):
     # delete() seems to be inherited by comment model from models.Model
     comment.delete()
     return redirect('post_detail',pk=post_pk)
+
+def user_register(request):
+
+    registered = False
+
+    if request.method == "POST":
+        user_form = UserForm(data=request.POST)
+        profile_form = UserProfileInfoForm(data=request.POST)
+
+        if all([user_form.is_valid(),profile_form.is_valid()]):
+            user = user_form.save()
+            user.set_password(user.password) # This sets the password to hash value. Next step will save once more
+            user.save()
+
+            profile = profile_form.save(commit=False) #Not committing yet till we link the user
+            profile.user = user
+
+            if 'profile_pic' in request.FILES:
+                profile.profile_pic = request.FILES['profile_pic']
+
+            profile.save()
+
+            registered = True
+
+        else:
+            print (user_form.errors,profile_form.errors)
+
+    else:
+        user_form = UserForm()
+        profile_form = UserProfileInfoForm()
+
+    return render(request,'registration/user_register.html'
+                            ,{'user_form':user_form,
+                                'profile_form':profile_form,
+                                'registered':registered})

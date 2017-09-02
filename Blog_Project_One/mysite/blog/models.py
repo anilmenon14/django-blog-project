@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.core.urlresolvers import reverse
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -42,3 +43,16 @@ class Comment(models.Model):
 
     def get_absolute_url(self):
         return reverse('post_list')
+
+class UserProfileInfo(models.Model):
+
+    # Do not inherit class from 'User' class. Else Django will be confused about 2 User classes
+    # Always use OnetoOneField like below that will map fields from this model to the User
+    user = models.OneToOneField(User)
+
+    #additional fields in Database below
+    portfolio_site = models.URLField(blank=True)
+    profile_pic = models.ImageField(blank=True,upload_to='profile_pics')
+
+    def __str__(self):
+        return self.user.username

@@ -2,7 +2,6 @@
 {% block content %}
 <div class="jumbotron">
 <h2>Please Login:</h2>
-<h3>(Must be superuser, please check with the site admin)</h3>
 
 {% if form.errors  %}
 <p>Your username and password didn't match ! Please try again!</p>
@@ -11,7 +10,10 @@
 <form action="{% url 'login' %}" method="post">
   {% csrf_token %}
   {{ form.as_p }}
+  <p>
   <input type="submit" class="btn btn-primary" name="" value="Login">
+  <p class="techfont">New User? Click <a href="{% url 'user_register' %}">Here</a></p>
+  </p>
   <!-- Below input is for views.login to take to next page after successful login -->
   <input type="hidden" name="next" value="{{next}}">
 
